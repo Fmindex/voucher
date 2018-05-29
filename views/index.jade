@@ -1,0 +1,50 @@
+extends layout
+
+block content
+    h1= "Voucher Dashboard"
+    // Wrapper
+    #wrapper
+
+        // Voucher INFO
+        #voucherInfo
+            h2 voucher Info
+            p
+                strong Name:
+                |  <span id='voucherInfoName'></span>
+                br
+                strong Img:
+                |  <span id='voucherInfoImg'></span>
+                br
+                strong Space:
+                |  <span id='voucherInfoSpace'></span>
+            #editVoucher
+                fieldset2
+                    input#inputSpace(type='text', placeholder='editspace')
+                    br
+                    button#btnEditVoucher Edit Voucher
+        // Voucher INFO
+        // Voucher LIST
+        h2 Voucher List
+        #voucherList
+            table
+                thead
+                    th Name
+                    th Img
+                    th Space
+                    th Click
+                    th Click2
+                    th Last Update
+                tbody
+        // Voucher LIST
+        // ADD Voucher
+        h2 Add Voucher
+        #addVoucher
+            fieldset
+                input#inputVoucherName(type='text', placeholder='Name')
+                input#inputVoucherImg(type='text', placeholder='Img')
+                br
+                input#inputVoucherSpace(type='text', placeholder='Space')
+                br
+                button#btnAddVoucher Add Voucher
+        // /ADD Voucher
+    // /WRAPPER
