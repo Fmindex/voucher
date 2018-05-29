@@ -3,7 +3,7 @@ var router = express.Router();
 var ObjectId = require('mongodb').ObjectId; 
 var moment = require('moment');
 /*
- * GET userlist.
+ * GET voucherList.
  */
 router.get('/voucherList', function(req, res) {
     var db = req.db;
@@ -14,7 +14,7 @@ router.get('/voucherList', function(req, res) {
 });
 
 /*
- * POST to adduser.
+ * POST to addvoucher.
  */
 router.post('/addvoucher', function(req, res) {
     var time = moment().utcOffset('+0700').format('MMMM Do YYYY, HH:mm:ss');
@@ -29,7 +29,7 @@ router.post('/addvoucher', function(req, res) {
 });
 
 /*
- * DELETE to deleteuser.
+ * DELETE to deletevoucher.
  */
 router.delete('/deletevoucher/:id', function(req, res) {
     var db = req.db;
