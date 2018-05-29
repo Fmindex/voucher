@@ -37,10 +37,6 @@ function populateTable() {
         $.each(data, function(){
             tableContent += '<tr>';
             tableContent += '<td><a href="#" class="linkshowuser" rel="' + this.name + '" myid="' + this._id + '" myimg="' + this.img + '" myclick="' + this.click + '" myclick2="' + this.click2 + '" title="Show Details">' + this.name + '</a></td>';
-            tableContent += '<td>' + this.img + '</td>';
-            tableContent += '<td>' + this.space + '</td>';
-            tableContent += '<td>' + this.click + '</td>';
-            tableContent += '<td>' + this.click2 + '</td>';
             tableContent += '<td>' + this.last_update + '</td>';
             tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
             tableContent += '</tr>';
@@ -73,8 +69,6 @@ function showVoucherInfo(event) {
 
     //Populate Info Box
     $('#voucherInfoName').text(thisVoucherObject.name);
-    $('#voucherInfoImg').text(thisVoucherObject.img);
-    $('#voucherInfoSpace').text(thisVoucherObject.space);
 
 };
 
@@ -94,10 +88,6 @@ function addVoucher(event) {
         // If it is, compile all user info into one object
         var newVoucher = {
             'name': $('#addVoucher fieldset input#inputVoucherName').val(),
-            'img': $('#addVoucher fieldset input#inputVoucherImg').val(),
-            'space': $('#addVoucher fieldset input#inputVoucherSpace').val(),
-            'click': 0,
-            'click2': 0,
         }
 
         // Use AJAX to post the object to our adduser service
@@ -186,14 +176,8 @@ function editVoucher(event) {
 
         // If it is, compile all user info into one object
         var newVoucher = {
-            'name': thisVoucherName,
-            'img': thisVoucherImg,
-            'space': $('#editVoucher fieldset2 input#inputSpace').val(),
-            'click': thisVoucherClick,
-            'click2': thisVoucherClick2,
+            'name': $('#editVoucher fieldset2 input#inputName').val(),
         }
-        console.log(newVoucher);
-        console.log(thisVoucherId);
         // Use AJAX to post the object to our adduser service
         $.ajax({
             type: 'PUT',
@@ -206,8 +190,8 @@ function editVoucher(event) {
             
 
                 // Clear the form inputs
-                $('#editVoucher fieldset2 input#inputSpace').val('');
-                $('#voucherInfoSpace').text(newVoucher.space);
+                $('#editVoucher fieldset2 input#inputName').val('');
+                $('#voucherInfoName').text(newVoucher.name);
 
                 // Update the table
                 populateTable();

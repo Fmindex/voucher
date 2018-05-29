@@ -11,15 +11,9 @@ block content
             p
                 strong Name:
                 |  <span id='voucherInfoName'></span>
-                br
-                strong Img:
-                |  <span id='voucherInfoImg'></span>
-                br
-                strong Space:
-                |  <span id='voucherInfoSpace'></span>
             #editVoucher
                 fieldset2
-                    input#inputSpace(type='text', placeholder='editspace')
+                    input#inputName(type='text', placeholder='editname')
                     br
                     button#btnEditVoucher Edit Voucher
         // Voucher INFO
@@ -29,10 +23,6 @@ block content
             table
                 thead
                     th Name
-                    th Img
-                    th Space
-                    th Click
-                    th Click2
                     th Last Update
                 tbody
         // Voucher LIST
@@ -41,10 +31,6 @@ block content
         #addVoucher
             fieldset
                 input#inputVoucherName(type='text', placeholder='Name')
-                input#inputVoucherImg(type='text', placeholder='Img')
-                br
-                input#inputVoucherSpace(type='text', placeholder='Space')
-                br
                 button#btnAddVoucher Add Voucher
         // /ADD Voucher
     // /WRAPPER
