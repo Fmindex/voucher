@@ -13,7 +13,8 @@ $(document).ready(function() {
     // Add User button click
     $('#btnAddVoucher').on('click', addVoucher);
     $('#btnEditVoucher').on('click', editVoucher);
-
+    $('#btnBuyVoucher').on('click', buyVoucher);
+    $('#btnUseVoucher').on('click',useVoucher);
     // Delete User link click
     $('#voucherList table tbody').on('click', 'td a.linkdeleteuser', deleteVoucher);
 
@@ -123,6 +124,59 @@ function addVoucher(event) {
     }
 };
 
+// Buy Vouchuyer
+function buyVoucher(event) {
+    event.preventDefault();
+
+    // Super basic validation - increase errorCount variable if any fields are blank
+    var errorCount = 0;
+    $('#buyVoucher input').each(function(index, val) {
+        if($(this).val() === '') { errorCount++; }
+    });
+
+    // Check and make sure errorCount's still at zero
+    if(errorCount === 0) {
+
+        // If it is, compile all user info into one object
+        var newVoucher = {
+            'name': $('#buyVoucher fieldset input#inputVoucherName').val(),
+            'value': $('#buyVoucher fieldset input#inputVoucherValue').val(),
+            'count': $('#buyVoucher fieldset input#inputVoucherCount').val(),
+        }
+
+        // Use AJAX to post the object to our adduser service
+        $.ajax({
+            type: 'POST',
+            data: newVoucher,
+            url: '/voucher/buyVoucher/',
+            dataType: 'JSON'
+        }).done(function( response ) {
+
+            // Check for successful (blank) response
+            if (response.msg === '') {
+
+                // Clear the form inputs
+                $('#buyVoucher fieldset input').val('');
+
+                // Update the table
+                populateTable();
+
+            }
+            else {
+
+                // If something goes wrong, alert the error message that our service returned
+                alert('Error: ' + response.msg);
+
+            }
+        });
+    }
+    else {
+        // If errorCount is more than 0, error out
+        alert('Please fill in all fields');
+        return false;
+    }
+};
+
 // Delete User
 function deleteVoucher(event) {
 
@@ -134,6 +188,7 @@ function deleteVoucher(event) {
     // Check and make sure the user confirmed
     if (confirmation === true) {
         // If they did, do our delete
+        
         $.ajax({
             type: 'DELETE',
             url: '/voucher/deleteVoucher/' + $(this).attr('rel')
@@ -146,6 +201,47 @@ function deleteVoucher(event) {
                 alert('Error: ' + response.msg);
             }
 
+            // Update the table
+            populateTable();
+
+        });
+
+    }
+    else {
+
+        // If they said no to the confirm, do nothing
+        return false;
+
+    }
+
+};
+
+// Use User
+function useVoucher(event) {
+
+    event.preventDefault();
+
+    // Pop up a confirmation dialog
+    var confirmation = confirm('Are you sure you want to delete this user?');
+
+    // Check and make sure the user confirmed
+    if (confirmation === true) {
+        // If they did, do our delete
+       
+            var delName =  $('#useVoucher fieldset input#inputVoucherName').val();
+            var delValue = $('#useVoucher fieldset input#inputVoucherValue').val();
+        
+        $.ajax({
+            type: 'DELETE',
+            url: '/voucher/useVoucher/' + delName +'/' + delValue
+        }).done(function( response ) {
+            // Check for a successful (blank) response
+            if (response.msg === '') {
+            }
+            else {
+                alert('Error: ' + response.msg);
+            }
+            $('#useVoucher fieldset input').val('');
             // Update the table
             populateTable();
 

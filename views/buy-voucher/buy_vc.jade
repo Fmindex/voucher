@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1 Buy vouchers
+    h2 Select Voucher
+        #buyVoucher
+            fieldset
+                input#inputVoucherName(type='text', placeholder='Name')
+                input#inputVoucherValue(type='text', placeholder='Value')
+                input#inputVoucherCount(type='text', placeholder='Count')
+                button#btnBuyVoucher Select
+    a(class='button', href='payment') Confirm

@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h1 Use coupons
+    h2 Select Voucher
+        #useVoucher
+            fieldset
+                input#inputVoucherName(type='text', placeholder='Name')
+                input#inputVoucherValue(type='text', placeholder='Value')
+                button#btnUseVoucher Select
+    a(class='button', href='qrCodeCoupon') Submit
