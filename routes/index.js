@@ -1,5 +1,191 @@
 var express = require('express');
 var router = express.Router();
+var Customer = require('../models/customer');
+var Ticket = require('../models/ticket');
+var Voucher = require('../models/voucher');
+var Ownership = require('../models/ownership');
+
+// ----------------//
+/* Customer Detail */
+// ----------------//
+router.post('/addCustomer', function (req, res) {
+  var query = { username: req.body.username,
+                password: req.body.password};
+  Customer.find(query, function (err, customers) {
+    if (err) throw err;
+    else if (customers.length == 0) {
+      var customer_model = new Customer(query);
+      customer_model.save(function (err, customer) {
+        if (err) throw err;
+        else return res.send({"user_id": customer._id});
+      });
+    }
+    else {
+      return res.send({"user_id": customers[0]._id});
+    }
+  });
+});
+
+router.get('/getAllCustomer', function (req, res) {
+  Customer.find({}, function (err, customers) {
+    if (err) {
+      throw err;
+    }else {
+      // delete customers[0].password;
+      return res.send(customers);
+    }
+  });
+});
+
+// --------------//
+/* Voucher Detail */
+// --------------//
+router.post('/generateVoucher', function (req, res) {
+  var query = { title: req.body.title,
+                type: req.body.type,
+                value: req.body.value,
+                status: req.body.status,
+                expire: req.body.expire,
+                describe: req.body.describe};
+  Voucher.find(query, function (err, vouchers) {
+    if (err) throw err;
+    else if (vouchers.length == 0) {
+      var voucher_model = new Voucher(query);
+      voucher_model.save(function (err, voucher) {
+        if (err) throw err;
+        else return res.send({"voucher_id": voucher._id});
+      });
+    }
+    else return res.send({"voucher_id": vouchers[0]._id});
+  });
+});
+
+router.get('/getAllVoucher', function (req, res) {
+  Voucher.find({}, function (err, vouchers) {
+    if (err)  throw err;
+    else {
+      // delete customers[0].password;
+      return res.send(vouchers);
+    }
+  });
+});
+
+// --------------//
+/* Ticket Detail */
+// --------------//
+router.post('/generateTicket', function (req, res) {
+  var query = { title: req.body.title,
+                type: req.body.type,
+                value: req.body.value,
+                status: req.body.status,
+                expire: req.body.expire,
+                describe: req.body.describe};
+  Ticket.find(query, function (err, tickets) {
+    if (err) throw err;
+    else if (tickets.length == 0) {
+      var ticket_model = new Ticket(query);
+      ticket_model.save(function (err, ticket) {
+        if (err) throw err;
+        else return res.send({"ticket_id": ticket._id});
+      });
+    }
+    else return res.send({"ticket_id": tickets[0]._id});
+  });
+});
+
+router.get('/getAllTicket', function (req, res) {
+  Ticket.find({}, function (err, tickets) {
+    if (err)  throw err;
+    else {
+      // delete customers[0].password;
+      return res.send(tickets);
+    }
+  });
+});
+
+// -----------------//
+/* Ownership Detail */
+// -----------------//
+router.post('/addVoucher', function (req, res) {
+  var query = { user_id: req.body.user_id,
+                voucher_id: req.body.voucher_id};
+  Ownership.find(query, function (err, ownerships) {
+    if (err) throw err;
+    else if (ownerships.length == 0) {
+      var ownership_model = new Ownership(query);
+      ownership_model.save(function (err, ownership) {
+        if (err) throw err;
+        else return res.send("Add SUCCESS");
+      });
+    }
+    else {
+      return res.send("Already got it");
+    }
+  });
+});
+
+router.post('/useVoucher', function (req, res) {
+  var query = { user_id: req.body.user_id,
+                voucher_id: req.body.coupon_id};
+  Ownership.remove(query, function (err, ownerships) {
+    if (err) throw err;
+    else return res.send("Remove Voucher Success !!!");
+  });
+});
+
+router.post('/changeVoucherOwner', function (req, res) {
+  var query = { user_id: req.body.send_user_id,
+                voucher_id: req.body.voucher_id};
+  var promises = Ownership.remove(query, function (err, ownerships) {
+    if (err) throw err;
+    else return res.send("Remove Success!!!");
+  });
+
+  Promise.all(promises).then( () => {
+    var query = { user_id: req.body.receive_user_id,
+                  voucher_id: req.body.voucher_id};
+    Ownership.save(query, function (err, ownership) {
+    if (err) throw err;
+    else if (ownerships.length == 0) {
+      var ownership_model = new Ownership(query);
+      ownership_model.save(function (err, ownership) {
+        if (err) throw err;
+      });
+    }
+    else return res.send("Change Success!!!");
+    });
+  }).catch((err) => {
+    res.send('FAIL');
+  });  
+});
+
+// router.get('/getAllCoupon', function (req, res) {
+//   console.log("OK");
+//   Group.find({}, function (err, groups) {
+//     if (err) {
+//       throw err;
+//     }else {
+//       return res.send(groups);
+//     }
+//   });
+// });
+
+// router.post('/createGroup', function (req, res) {
+//   console.log("OK2");
+//   var query = { name: req.body.gname };
+//   Group.find(query, function (err, groups) {
+//     if (err) console.error("group finding error");
+//     else if (groups.length == 0) {
+//       var group_model = new Group(query);
+//       group_model.save(function (err, group) {
+//         if (err) throw err;
+//       });
+//     }
+//     else {
+//       return res.send({ "gid": groups[0].id });
+//     }
+//   })
+// });
 
 /* GET home page. */
 router.get('/', function(req, res) {

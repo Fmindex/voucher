@@ -8,8 +8,8 @@ var moment = require('moment');
 router.get('/voucherList', function(req, res) {
     var db = req.db;
     var collection = db.get('voucher');
-    collection.find({},{},function(e,docs){
-        res.json(docs);
+    collection.find({},{},function(e,result){
+        res.json(result);
     });
 });
 
