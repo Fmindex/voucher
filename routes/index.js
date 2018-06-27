@@ -126,8 +126,8 @@ router.post('/addVoucher', function (req, res) {
 
 router.post('/useVoucher', function (req, res) {
   var query = { user_id: req.body.user_id,
-                voucher_id: req.body.coupon_id};
-  Ownership.remove(query, function (err, ownerships) {
+                voucher_id: req.body.voucher_id};
+  Ownership.deleteOne(query, function (err, ownerships) {
     if (err) throw err;
     else return res.send("Remove Voucher Success !!!");
   });
@@ -136,23 +136,25 @@ router.post('/useVoucher', function (req, res) {
 router.post('/changeVoucherOwner', function (req, res) {
   var query = { user_id: req.body.send_user_id,
                 voucher_id: req.body.voucher_id};
-  var promises = Ownership.remove(query, function (err, ownerships) {
+  var promises = Ownership.deleteOne(query, function (err, ownerships) {
     if (err) throw err;
-    else return res.send("Remove Success!!!");
+    else console.log("Remove Success!!!");
   });
-
-  Promise.all(promises).then( () => {
-    var query = { user_id: req.body.receive_user_id,
+  promises.then( () => {
+    console.log("OK");
+    var query2 = { user_id: req.body.receive_user_id,
                   voucher_id: req.body.voucher_id};
-    Ownership.save(query, function (err, ownership) {
+    Ownership.save(query2, function (err, ownership) {
     if (err) throw err;
-    else if (ownerships.length == 0) {
-      var ownership_model = new Ownership(query);
+    else if (ownership.length == 0) {
+      console.log("OK1");
+      var ownership_model = new Ownership(query2);
       ownership_model.save(function (err, ownership) {
         if (err) throw err;
+        else return res.send("Change Success!!!");
       });
     }
-    else return res.send("Change Success!!!");
+    else return res.send("Change Fail!!!");
     });
   }).catch((err) => {
     res.send('FAIL');

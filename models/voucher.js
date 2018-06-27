@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const VoucherSchema = new Schema({
     title: String,
+    company: String,
     type: String,
     value: Number,
     status: String,
