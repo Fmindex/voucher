@@ -134,31 +134,80 @@ router.post('/useVoucher', function (req, res) {
 });
 
 router.post('/changeVoucherOwner', function (req, res) {
-  var query = { user_id: req.body.send_user_id,
-                voucher_id: req.body.voucher_id};
-  var promises = Ownership.deleteOne(query, function (err, ownerships) {
+  // var query = { user_id: req.body.send_user_id,
+  //               voucher_id: req.body.voucher_id};
+  // var promises = Ownership.deleteOne(query, function (err, ownerships) {
+  //   if (err) throw err;
+  //   else console.log("Remove Success!!!");
+  // });
+  // promises.then( () => {
+  //   console.log("OK");
+  //   var query2 = { user_id: req.body.receive_user_id,
+  //                 voucher_id: req.body.voucher_id};
+  //   Ownership.save(query2, function (err, ownership) {
+  //   if (err) throw err;
+  //   else if (ownership.length == 0) {
+  //     console.log("OK1");
+  //     var ownership_model = new Ownership(query2);
+  //     ownership_model.save(function (err, ownership) {
+  //       if (err) throw err;
+  //       else return res.send("Change Success!!!");
+  //     });
+  //   }
+  //   else return res.send("Change Fail!!!");
+  //   });
+  // }).catch((err) => {
+  //   res.send('FAIL');
+  // });
+  var query = { voucher_id: req.body.voucher_id};
+  var promises = Ownership.findOne(query, function (err, ownerships) {
     if (err) throw err;
-    else console.log("Remove Success!!!");
-  });
-  promises.then( () => {
-    console.log("OK");
-    var query2 = { user_id: req.body.receive_user_id,
-                  voucher_id: req.body.voucher_id};
-    Ownership.save(query2, function (err, ownership) {
-    if (err) throw err;
-    else if (ownership.length == 0) {
-      console.log("OK1");
-      var ownership_model = new Ownership(query2);
-      ownership_model.save(function (err, ownership) {
-        if (err) throw err;
-        else return res.send("Change Success!!!");
-      });
+    else{
+      console.log("FOUND FORMER OWNER")
+      return ownerships
     }
-    else return res.send("Change Fail!!!");
+  });
+  promises.then( (ownerships) => {
+    return new Promise((resolve, reject) => {
+      var query2 = { user_id: ownerships.user_id};
+      Ownership.deleteOne( query2, function(err, result) {
+        if(err) {
+          console.log("NOT DELETED");
+          throw err;
+        }
+        else{
+          console.log("DELETED");
+          resolve();
+        }
+      });
+    })
+
+  }).then( () => {
+    return new Promise((resolve, reject) => {
+      var query3 = { _id: req.body.voucher_id};
+      Voucher.findOne(query3, function(err, voucher) {
+        if(err) {
+          console.log("VOUCHER NOTFOUND");
+          throw err;
+        }
+        else{
+          console.log("VOUCHER FOUND");
+          resolve( voucher );
+        }
+      });
+    })
+  }).then( (voucher) => {
+    var query4 = {user_id: req.body.send_user_id,
+                  voucher_id: voucher._id,
+                  company: voucher.company,
+                  type: voucher.type,
+                  value: voucher.value};
+    var ownership_model = new Ownership(query4);
+    ownership_model.save(function (err, ownership) {
+      if(err) throw err;
+      else res.send("CHANGED SUCCESSFULLY");
     });
-  }).catch((err) => {
-    res.send('FAIL');
-  });  
+  });
 });
 
 // router.get('/getAllCoupon', function (req, res) {
